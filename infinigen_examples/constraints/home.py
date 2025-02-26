@@ -35,7 +35,7 @@ from .semantics import home_asset_usage
 def sample_home_constraint_params():
     return dict(
         # what pct of the room floorplan should we try to fill with furniture?
-        furniture_fullness_pct=uniform(0.6, 0.9),
+        furniture_fullness_pct=uniform(0.8, 0.9),
         # how many objects in each shelving per unit of volume
         obj_interior_obj_pct=uniform(0.5, 1),  # uniform(0.6, 0.9),
         # what pct of top surface of storage furniture should be filled with objects? e.g pct of top surface of shelf
@@ -595,7 +595,7 @@ def home_furniture_constraints():
     )
 
     constraints["storage"] = rooms.all(
-        lambda r: (storage_freestanding.related_to(r).count().in_range(1, 7))
+        lambda r: (storage_freestanding.related_to(r).count().in_range(3, 7))
     )
     score_terms["storage"] = rooms.mean(
         lambda r: (
@@ -677,6 +677,7 @@ def home_furniture_constraints():
     # endregion
 
     # region PLANTS
+    # TODO remove all big plant
     small_plants = obj[tableware.PlantContainerFactory].related_to(storage, cu.ontop)
     big_plants = (
         obj[tableware.LargePlantContainerFactory]
@@ -856,12 +857,12 @@ def home_furniture_constraints():
             beds.related_to(r).count().in_range(1, 2)
             * sidetables.related_to(beds.related_to(r)).count().in_range(0, 2)
             * rugs.related_to(r).count().in_range(0, 1)
-            * desks.related_to(r).count().in_range(0, 1)
+            * desks.related_to(r).count().in_range(2, 4)
             * storage_freestanding.related_to(r).count().in_range(2, 5)
-            * floor_lamps.related_to(r).count().in_range(0, 1)
+            * floor_lamps.related_to(r).count().in_range(1, 2)
             * storage.related_to(r).all(
                 lambda s: (
-                    obj[Semantics.OfficeShelfItem].related_to(s, cu.on).count() >= 0
+                    obj[Semantics.OfficeShelfItem].related_to(s, cu.on).count() == 0
                 )
             )
         )
@@ -890,7 +891,7 @@ def home_furniture_constraints():
     constraints["kitchen_counters"] = kitchens.all(
         lambda r: (
             wallcounter.related_to(r).count().in_range(1, 2)
-            * island.related_to(r).count().in_range(0, 1)
+            * island.related_to(r).count().in_range(0, 2)
         )
     )
 
@@ -1210,15 +1211,15 @@ def home_furniture_constraints():
         lambda r: (
             storage_freestanding.related_to(r).count().in_range(0, 5)
             * tvstands.related_to(r).count().equals(1)
-            * sidetables.related_to(sofas.related_to(r)).count().in_range(0, 2)
-            * desks.related_to(r).count().in_range(0, 1)
-            * coffeetables.related_to(r).count().in_range(0, 1)
+            * sidetables.related_to(sofas.related_to(r)).count().in_range(1, 3)
+            * desks.related_to(r).count().in_range(4, 6)
+            * coffeetables.related_to(r).count().in_range(1, 3)
             * coffeetables.related_to(r).all(
                 lambda t: (
                     obj[Semantics.OfficeShelfItem]
                     .related_to(t, cu.on)
                     .count()
-                    .in_range(0, 3)
+                    .in_range(0, 0)
                 )
             )
             * (
@@ -1249,7 +1250,7 @@ def home_furniture_constraints():
         lambda r: (
             storage.all(
                 lambda t: (
-                    obj[Semantics.OfficeShelfItem].related_to(t, cu.on).count() >= 0
+                    obj[Semantics.OfficeShelfItem].related_to(t, cu.on).count() == 0
                 )
             )
             * coffeetables.all(
@@ -1258,7 +1259,7 @@ def home_furniture_constraints():
                     .related_to(t, cu.ontop)
                     .count()
                     .in_range(0, 1)
-                    * (obj[Semantics.OfficeShelfItem].related_to(t, cu.on).count() >= 0)
+                    * (obj[Semantics.OfficeShelfItem].related_to(t, cu.on).count() == 0)
                 )
             )
         )
@@ -1335,7 +1336,7 @@ def home_furniture_constraints():
                         obj[Semantics.OfficeShelfItem]
                         .related_to(t, cu.on)
                         .count()
-                        .in_range(0, 5)
+                        .in_range(0, 0)
                     )
                 )
             )

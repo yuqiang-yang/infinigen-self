@@ -51,7 +51,7 @@ class RoomConstants:
     def global_params(
         self,
         unit=0.5,
-        segment_margin=1.4,
+        segment_margin=1.8,
         wall_thickness=("uniform", 0.2, 0.3),
         wall_height=("uniform", 2.8, 3.2),
     ):
@@ -65,7 +65,7 @@ class RoomConstants:
         }
 
     def door_params(
-        self, door_width_ratio=("uniform", 0.7, 0.8), door_size=("uniform", 2.0, 2.4)
+        self, door_width_ratio=("uniform", 0.9, 0.95), door_size=("uniform", 2.2, 2.6)
     ):
         door_width = (self.segment_margin - self.wall_thickness) * rg(door_width_ratio)
         assert door_width > 0
