@@ -201,9 +201,9 @@ for root, dirs, files in os.walk(args.blender):
                 cv2.imwrite("%s/%s/trajectory_%d/decision_map.jpg"%(args.output_dir,house_id,trajectory_index),path_planner.color_decision_map)
 
                 fps_writer = cv2.VideoWriter("%s/%s/trajectory_%d/fps.mp4" % (args.output_dir, house_id, trajectory_index), 
-                             cv2.VideoWriter_fourcc(*'mp4v'), 10, (args.image_width, args.image_height))
+                             cv2.VideoWriter_fourcc(*'x264'), 10, (args.image_width, args.image_height))
                 depth_writer = cv2.VideoWriter("%s/%s/trajectory_%d/depth.mp4" % (args.output_dir, house_id, trajectory_index), 
-                                            cv2.VideoWriter_fourcc(*'mp4v'), 10, (args.image_width, args.image_height))
+                                            cv2.VideoWriter_fourcc(*'x264'), 10, (args.image_width, args.image_height))
 
                 camera_trajectory = []
                 for pt,rt in zip(waypoints,wayrotations):
