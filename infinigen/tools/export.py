@@ -697,6 +697,18 @@ def bake_scene(folderPath: Path, image_res, vertex_colors, export_usd):
         obj.hide_render = True
         obj.hide_viewport = True
 
+def add_physics_to_usd(export_file):
+    stage = Usd.Stage.Open(str(export_file))
+    if not stage:
+        logging.error(f"Failed to open USD file: {export_file}")
+        return
+
+    for prim in stage.Traverse():
+        if prim.IsA(UsdGeom.Mesh):
+            UsdPhysics.CollisionAPI.Apply(prim)
+            logging.info(f"Added collision to {prim.GetPath()}")
+
+    stage.GetRootLayer().Save()
 
 def run_blender_export(
     exportPath: Path, format: str, vertex_colors: bool, individual_export: bool
@@ -752,6 +764,7 @@ def run_blender_export(
             selected_objects_only=individual_export,
             root_prim_path="/World",
         )
+        add_physics_to_usd(exportPath)
 
 
 def export_scene(
